@@ -5,10 +5,9 @@
 **CI-4835 - Sep-Dic 2025**
 
 ## 👥 Integrantes del Equipo
-- [Nombre 1]
-- [Nombre 2] 
-- [Nombre 3]
-- Andrea
+- Andrea Zambrano
+- Eleyton Diaz
+- Renata Colon
 
 ## 📋 Descripción del Proyecto
 Implementación de un servidor web Apache con sistema de monitoreo de carga computacional para el Taller 1 de Redes de Computadores.
@@ -48,12 +47,3 @@ taller1-redes/
 Usar Apache Benchmark:
 ```bash
 ab -n 1000 -c 10 http://localhost/
-
-
----
-
-## 🔧 **Paso 4: Crear archivo de configuración**
-
-```bash
-# Archivo de configuración
-nano setup.sh
