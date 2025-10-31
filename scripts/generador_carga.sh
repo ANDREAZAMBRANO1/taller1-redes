@@ -11,10 +11,12 @@ show_usage() {
     echo "Uso: $0 [tipo_carga]"
     echo ""
     echo "Tipos de carga disponibles:"
-    echo "  ligera    - 100 peticiones, 5 concurrentes"
-    echo "  media     - 500 peticiones, 10 concurrentes" 
-    echo "  pesada    - 1000 peticiones, 20 concurrentes"
-    echo "  extrema   - 5000 peticiones, 50 concurrentes"
+    echo "  ligera    		- 100 peticiones, 5 concurrentes"
+    echo "  media     		- 500 peticiones, 10 concurrentes" 
+    echo "  pesada    		- 1000 peticiones, 20 concurrentes"
+    echo "  extrema   		- 5000 peticiones, 50 concurrentes"
+    echo "  ultra     		- 10000 peticiones, 100 concurrentes"
+    echo "  apocalipsis   	- 20000 peticiones, 200 concurrentes"
     echo ""
     echo "Ejemplo: $0 media"
 }
@@ -41,6 +43,14 @@ case $1 in
     "extrema")
         REQUESTS=5000
         CONCURRENT=50
+        ;;
+    "ultra")
+        REQUESTS=10000
+        CONCURRENT=100
+        ;;
+    "apocalipsis")
+        REQUESTS=20000
+        CONCURRENT=200
         ;;
     *)
         echo "❌ Tipo de carga no válido: $1"

@@ -11,7 +11,8 @@ NC='\033[0m' # No Color
 
 # Configuración
 LOG_FILE="../data/metrics_$(date +%Y%m%d_%H%M%S).csv"
-UPDATE_INTERVAL=3
+UPDATE_INTERVAL=0.1
+
 
 echo -e "${CYAN}
 ╔══════════════════════════════════════════════╗
@@ -48,11 +49,11 @@ monitor_loop() {
         
         # CPU
         CPU=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
-        CPU_INT=${CPU%.*}
+        CPU_INT=$(echo $CPU | tr ',' '.' | cut -d'.' -f1)
         
         # Memoria
         MEM=$(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100}')
-        MEM_INT=${MEM%.*}
+        MEM_INT=$(echo $MEM | tr ',' '.' | cut -d'.' -f1)
         
         # Tiempo de respuesta
         START_TIME=$(date +%s%N)
