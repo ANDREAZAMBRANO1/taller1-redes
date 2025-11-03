@@ -88,6 +88,7 @@
             color: white;
             border: none;
             border-radius: 8px;
+            text-decoration: none;
             cursor: pointer;
             font-size: 1em;
             transition: all 0.3s ease;
@@ -131,7 +132,7 @@
                     <h3>🔧 Configuración</h3>
                     <p><strong>Servidor:</strong> Apache 2</p>
                     <p><strong>Sistema:</strong> Ubuntu WSL</p>
-                    <p><strong>Estudiante:</strong> Andrea</p>
+                    <p><strong>Estudiantes:</strong> Andrea Z., Eleyton D., Renata C.</p>
                 </div>
                 
                 <div class="info-card">
@@ -159,16 +160,15 @@
 
             <div class="test-buttons">
                 <button class="test-btn" onclick="simulateLoad()">🧪 Simular Carga Liviana</button>
-                <button class="test-btn" onclick="calculatePrime()">🔢 Calcular Número Primo</button>
-                <button class="test-btn" onclick="refreshMetrics()">🔄 Actualizar Métricas</button>
+                <button class="test-btn" onclick="calculateRandomFibonacci()">🌀 Calcular Fibonacci</button>
+                <button class="test-btn" onclick="generarPrimosServidor()">🔢 Calcular Números Primos</button>
+                
+                <button class="test-btn" onclick="generarArchivoServidor()">🔄 Ordenar Un Arreglo</button>
             </div>
 
-            <div class="info-card">
-                <h3>🎯 Próximos Pasos</h3>
-                <p>1. Ejecutar script de monitoreo continuo</p>
-                <p>2. Generar carga artificial con Apache Benchmark</p>
-                <p>3. Analizar datos de rendimiento</p>
-                <p>4. Proponer mejoras de optimización</p>
+            <div class="test-buttons">
+                <a href="#" download id="descarga-primos" class="test-btn" style="display:none;">📥 Descargar primos</a>
+                <a href="#" download id="descarga-enlace" class="test-btn" style="display:none;">📥 Descargar arreglo ordenado</a>
             </div>
         </div>
 
@@ -209,30 +209,28 @@
         }
 
         // Calcular número primo (más carga)
-        function calculatePrime() {
+        function generarPrimosServidor() {
             incrementCounter();
             const startTime = performance.now();
-            
-            let count = 0;
-            let num = 2;
-            while (count < 1000) {
-                let isPrime = true;
-                for (let i = 2; i <= Math.sqrt(num); i++) {
-                    if (num % i === 0) {
-                        isPrime = false;
-                        break;
-                    }
-                }
-                if (isPrime) count++;
-                num++;
-            }
-            
+
+            fetch("/generar_primos.php")
+                .then(response => response.text())
+                .then(filename => {
+                    console.log("Archivo de primos generado:", filename.trim());
+
+                    const enlace = document.getElementById("descarga-primos");
+                    enlace.href = "/" + filename.trim();
+                    enlace.style.display = "inline-block";
+                })
+                .catch(error => console.error("Error al generar primos:", error));
+
             const endTime = performance.now();
-            document.getElementById("response-time").textContent = 
+            document.getElementById("response-time").textContent =
                 Math.round(endTime - startTime) + " ms";
-            
-            alert("Cálculo de 1000 primos completado en " + Math.round(endTime - startTime) + " ms");
+
+            alert("Archivo de primos generado en " + Math.round(endTime - startTime) + " ms");
         }
+
 
         // Actualizar métricas
         function refreshMetrics() {
@@ -241,6 +239,50 @@
             document.getElementById("response-time").textContent = 
                 Math.round(Math.random() * 50 + 10) + " ms";
         }
+
+        function generarArchivoServidor() {
+            incrementCounter();
+            const startTime = performance.now();
+
+            fetch("/generar_ph.php")
+                .then(response => response.text())
+                .then(filename => {
+                    console.log("Archivo generado:", filename.trim());
+
+                    // Actualiza el enlace de descarga con el nombre recibido
+                    const enlace = document.getElementById("descarga-enlace");
+                    enlace.href = "/" + filename.trim();
+                    enlace.style.display = "inline-block";
+                })
+                .catch(error => console.error("Error al generar archivo:", error));
+
+            const endTime = performance.now();
+            document.getElementById("response-time").textContent =
+                Math.round(endTime - startTime) + " ms";
+
+            alert("Archivo generado en " + Math.round(endTime - startTime) + " ms");
+        }
+
+
+        function fibonacciRecursive(n) {
+            if (n <= 1) return n;
+            return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+        }
+
+        function calculateRandomFibonacci() {
+            incrementCounter();
+            const n = Math.floor(Math.random() * 11) + 30; // aleatorio entre 30 y 40
+            const startTime = performance.now();
+
+            const result = fibonacciRecursive(n);
+
+            const endTime = performance.now();
+            document.getElementById("response-time").textContent =
+                Math.round(endTime - startTime) + " ms";
+
+            alert("Fibonacci(" + n + ") = " + result + " calculado en " + Math.round(endTime - startTime) + "ms");
+        }
+
 
         // Inicializar
         updateTime();
@@ -251,3 +293,4 @@
     </script>
 </body>
 </html>
+
