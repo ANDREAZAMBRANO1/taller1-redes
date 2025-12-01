@@ -65,7 +65,7 @@ monitor_loop() {
         APACHE_PROCS=$(ps aux | grep apache2 | grep -v grep | wc -l)
         
         # Conexiones
-        CONNECTIONS=$(ss -t sport = :80 | grep ESTAB | wc -l)
+       CONNECTIONS=$(ss -t sport = :80 | awk 'NR > 1 {print $0}' | grep ESTAB | wc -l)
         
         # Load average
         LOAD_AVG=$(cat /proc/loadavg | awk '{print $1}')

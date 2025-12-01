@@ -1,7 +1,13 @@
 #!/bin/bash
 
 # Ruta de salida
-OUT_DIR="/var/www/html"
+OUTPUT_DIR="/home/andrea/PROYECTS/taller1-redes/src/output"
+
+# 2. Crear si no existe
+sudo mkdir -p "$OUTPUT_DIR"
+
+# 3. Asignar propiedad a www-data (para que pueda escribir)
+sudo chown -R www-data:www-data "$OUTPUT_DIR"
 
 while true; do
     # Generar un número aleatorio como sufijo
@@ -24,4 +30,3 @@ sort -n "$RAW_FILE" > "$SORTED_FILE"
 
 
 echo "ordenado_$SUFFIX.txt"
-
