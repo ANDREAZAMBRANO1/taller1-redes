@@ -9,12 +9,22 @@ if ! command -v apache2 &> /dev/null; then
     sudo apt install apache2 -y
 fi
 
-# Copiar archivos al servidor
+# Instalar PHP y el módulo de Apache para PHP (Requerido para archivos .php)
+if ! command -v php &> /dev/null; then
+    echo "📦 Instalando PHP y módulo Apache..."
+    sudo apt install php libapache2-mod-php -y
+fi
+
+# Copiar archivos al servidor (Usando cp -r para copiar todo el contenido de src/)
 echo "📁 Copiando archivos al servidor..."
-sudo cp src/index.html /var/www/html/
+sudo cp -r src/. /var/www/html/ # Copia todo el contenido de src/ a /var/www/html/
 
 # Dar permisos a los scripts
-chmod +x scripts/*.sh
+sudo chown -R www-data:www-data /var/www/html
+
+# Reiniciar Apache para cargar el nuevo módulo PHP
+echo "🔄 Reiniciando Apache..."
+sudo systemctl restart apache2
 
 echo "✅ Configuración completada"
 echo "🌐 Servidor disponible en: http://localhost"

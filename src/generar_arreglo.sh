@@ -1,32 +1,20 @@
 #!/bin/bash
 
 # Ruta de salida
-OUTPUT_DIR="/home/andrea/PROYECTS/taller1-redes/src/output"
+OUTPUT_DIR="/var/www/html"
 
-# 2. Crear si no existe
-sudo mkdir -p "$OUTPUT_DIR"
+# Genera un sufijo aleatorio.
+SUFFIX=$RANDOM
 
-# 3. Asignar propiedad a www-data (para que pueda escribir)
-sudo chown -R www-data:www-data "$OUTPUT_DIR"
+# Nombres de archivo usando la variable CORRECTA
+RAW_FILE="$OUTPUT_DIR/arreglo_$SUFFIX.txt"
+SORTED_FILE="$OUTPUT_DIR/ordenado_$SUFFIX.txt"
 
-while true; do
-    # Generar un número aleatorio como sufijo
-    SUFFIX=$RANDOM
-    # Nombres de archivo con sufijo
-    RAW_FILE="$OUT_DIR/arreglo_$SUFFIX.txt"
-    SORTED_FILE="$OUT_DIR/ordenado_$SUFFIX.txt"
-
-    # Si no existe ninguno de los dos archivos, sal del bucle
-    if [[ ! -e "$RAW_FILE" && ! -e "$SORTED_FILE" ]]; then
-        break
-    fi
-done
-
-# Generar 10,000 números aleatorios
+# Generar 10,000 números aleatorios (Escritura 1)
 for i in {1..10000}; do echo $((RANDOM % 10000)); done > "$RAW_FILE"
 
-# Ordenar el archivo
+# Ordenar el archivo (Escritura 2)
 sort -n "$RAW_FILE" > "$SORTED_FILE"
 
-
+# Muestra el nombre del archivo para que PHP lo capture
 echo "ordenado_$SUFFIX.txt"
