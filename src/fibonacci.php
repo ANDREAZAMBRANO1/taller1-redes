@@ -10,7 +10,6 @@ function fibonacci($n) {
     return fibonacci($n - 1) + fibonacci($n - 2);
 }
 
-// Elige un número que consuma mucho CPU (ej. 40)
 $n = 40; 
 $start_time = microtime(true);
 $result = fibonacci($n);

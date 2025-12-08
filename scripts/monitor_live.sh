@@ -45,15 +45,16 @@ print_progress_bar() {
 monitor_loop() {
     while true; do
         # Obtener métricas
-        TIMESTAMP=$(date '+%H:%M:%S')
         
-        # CPU
-        CPU=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
-        CPU_INT=$(echo $CPU | tr ',' '.' | cut -d'.' -f1)
+        # CPU - Sustituir ',' por '.' y guardar solo el valor flotante
+        CPU_RAW=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
+        CPU=$(echo $CPU_RAW | tr ',' '.')
+        CPU_INT=$(echo $CPU | cut -d'.' -f1) # Para la barra de progreso
         
-        # Memoria
-        MEM=$(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100}')
-        MEM_INT=$(echo $MEM | tr ',' '.' | cut -d'.' -f1)
+        # Memoria - Sustituir ',' por '.'
+        MEM_RAW=$(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100}')
+        MEM=$(echo $MEM_RAW | tr ',' '.')
+        MEM_INT=$(echo $MEM | cut -d'.' -f1) # Para la barra de progreso
         
         # Tiempo de respuesta
         START_TIME=$(date +%s%N)
@@ -70,8 +71,11 @@ monitor_loop() {
         # Load average
         LOAD_AVG=$(cat /proc/loadavg | awk '{print $1}')
         
-        # Guardar en CSV
-        echo "$(date '+%Y-%m-%d %H:%M:%S'),$CPU,$MEM,$RESPONSE_TIME,$APACHE_PROCS,$CONNECTIONS,$LOAD_AVG" >> $LOG_FILE
+        # Guardar en CSV: Usamos la fecha y hora completa, pero SIN ESPACIOS
+        # Esto asegura que la primera columna sea un solo valor (incluyendo la fecha y hora)
+        FULL_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+        
+        echo "$FULL_TIMESTAMP,$CPU,$MEM,$RESPONSE_TIME,$APACHE_PROCS,$CONNECTIONS,$LOAD_AVG" >> $LOG_FILE
         
         # Mostrar interfaz
         clear
