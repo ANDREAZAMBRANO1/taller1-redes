@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidor de Pruebas - Taller Redes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .info-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .metrics {
+            background: #e8f4fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .metrics h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .test-btn {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        .test-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        footer {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .timestamp {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 Servidor de Pruebas</h1>
+            <p class="subtitle">Taller de Redes de Computadores I - CI-4835</p>
+        </header>
+
+        <div class="content">
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>📊 Objetivo del Servidor</h3>
+                    <p>Este servidor está configurado para realizar pruebas de carga computacional y medir el rendimiento bajo diferentes condiciones de estrés.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🔧 Configuración</h3>
+                    <p><strong>Servidor:</strong> Apache 2</p>
+                    <p><strong>Sistema:</strong> Ubuntu WSL</p>
+                    <p><strong>Estudiantes:</strong> Andrea Z., Eleyton D., Renata C.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📈 Métricas a Monitorear</h3>
+                    <ul>
+                        <li>Uso de CPU y memoria</li>
+                        <li>Tiempos de respuesta</li>
+                        <li>Número de conexiones simultáneas</li>
+                        <li>Throughput del servidor</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timestamp">
+                <h3>🕒 Información en Tiempo Real</h3>
+                <p><strong>Tiempo del servidor:</strong> <span id="server-time"></span></p>
+                <p><strong>Peticiones atendidas:</strong> <span id="request-count">0</span></p>
+            </div>
+
+            <div class="metrics">
+                <h2>📊 Panel de Métricas</h2>
+                <div class="metric-value" id="response-time">-- ms</div>
+                <p>Tiempo de respuesta actual</p>
+            </div>
+
+            <div class="test-buttons">
+                <button class="test-btn" onclick="calculateFibonacci()">🌀 Calcular Fibonacci</button>
+                <button class="test-btn" onclick="generarPrimosServidor()">🔢 Calcular Números Primos</button>
+                <button class="test-btn" onclick="generarArchivoServidor()">🔄 Ordenar Un Arreglo</button>
+            </div>
+
+            <div class="test-buttons">
+                <a href="#" download id="descarga-primos" class="test-btn" style="display:none;">📥 Descargar primos</a>
+                <a href="#" download id="descarga-enlace" class="test-btn" style="display:none;">📥 Descargar arreglo ordenado</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Universidad Simón Bolívar • Departamento de Computación • Sep-Dic 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Actualizar tiempo del servidor
+        function updateTime() {
+            document.getElementById("server-time").textContent = new Date().toLocaleString();
+        }
+        
+        // Contador de peticiones simple
+        let requestCount = 0;
+        function incrementCounter() {
+            requestCount++;
+            document.getElementById("request-count").textContent = requestCount;
+        }
+
+        
+        // Calcular número primo (más carga)
+        function generarPrimosServidor() {
+            incrementCounter();
+            const startTime = performance.now();
+
+            fetch("/generar_primos.php")
+                .then(response => response.text())
+                .then(filename => {
+                    console.log("Archivo de primos generado:", filename.trim());
+
+                    const enlace = document.getElementById("descarga-primos");
+                    enlace.href = "/" + filename.trim();
+                    enlace.style.display = "inline-block";
+                })
+                .catch(error => console.error("Error al generar primos:", error));
+
+            const endTime = performance.now();
+            document.getElementById("response-time").textContent =
+                Math.round(endTime - startTime) + " ms";
+
+            alert("Archivo de primos generado en " + Math.round(endTime - startTime) + " ms");
+        }
+
+
+        // Actualizar métricas
+        function refreshMetrics() {
+            incrementCounter();
+            updateTime();
+            document.getElementById("response-time").textContent = 
+                Math.round(Math.random() * 50 + 10) + " ms";
+        }
+
+        function generarArchivoServidor() {
+            incrementCounter();
+            const startTime = performance.now();
+
+            fetch("/generar_ph.php")
+                .then(response => response.text())
+                .then(filename => {
+                    console.log("Archivo generado:", filename.trim());
+
+                    // Actualiza el enlace de descarga con el nombre recibido
+                    const enlace = document.getElementById("descarga-enlace");
+                    enlace.href = "/" + filename.trim();
+                    enlace.style.display = "inline-block";
+                })
+                .catch(error => console.error("Error al generar archivo:", error));
+
+            const endTime = performance.now();
+            document.getElementById("response-time").textContent =
+                Math.round(endTime - startTime) + " ms";
+
+            alert("Archivo generado en " + Math.round(endTime - startTime) + " ms");
+        }
+
+
+        function calculateFibonacci() {
+            incrementCounter();
+            const startTime = performance.now();
+
+            fetch("/fibonacci_opt.php")
+                .then(response => response.text())
+                .then(result => {
+                    const endTime = performance.now();
+                    const tiempoMs = Math.round(endTime - startTime);
+
+                    document.getElementById("response-time").textContent =
+                        tiempoMs + " ms";
+
+                    alert("Fib(40) = " + result + " calculado en " + tiempoMs + " ms");
+                })
+                .catch(error => console.error("Error al calcular Fibonacci:", error));
+        }
+
+        // Inicializar
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Incrementar contador al cargar la página
+        window.addEventListener("load", incrementCounter);
+    </script>
+</body>
+</html>
+
